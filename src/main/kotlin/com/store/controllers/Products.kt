@@ -13,7 +13,7 @@ class ProductsController {
 
     // Data classes for Product and ProductDetails
     data class Product(val id: Int, val name: String, val type: String, val inventory: Int)
-    data class ProductDetails(val name: String?, val type: String?, val inventory: Int?)
+    data class ProductDetails(val name: String?, val type: String?, val inventory: Int?, val cost: Double?) // Added 'cost'
     data class ProductId(val id: Int)
     data class ErrorResponseBody(val status: Int, val error: String) {
         constructor(statusCode: HttpStatus, errorMessage: String) : this(statusCode.value(), errorMessage)
@@ -37,7 +37,7 @@ class ProductsController {
         // Validate product details
         val validationError = validateProductDetails(productDetails)
         if (validationError != null) {
-            return ResponseEntity.badRequest().body(ErrorResponseBody(HttpStatus.BAD_REQUEST, validationError))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponseBody(HttpStatus.BAD_REQUEST, validationError))
         }
 
         // Generate a unique ID for the new product
@@ -65,6 +65,10 @@ class ProductsController {
         }
         if (productDetails.inventory < 0) {
             return "Inventory cannot be negative"
+        }
+        // Check for cost validation
+        if (productDetails.cost == null || productDetails.cost <= 0) {
+            return "Cost is required and must be greater than zero"
         }
         return null
     }
