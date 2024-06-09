@@ -37,6 +37,7 @@ paths:
                       name: 'XYZ Phone'
                       type: 'gadget'
                       inventory: 2
+                      cost: 499.99  # Example cost property
         "400":
           description: Bad Request
           content:
@@ -56,6 +57,7 @@ paths:
                   name: iPhone
                   type: gadget
                   inventory: 100
+                  cost: 899.99  # Example value for the new 'cost' property
       responses:
         "201":
           description: POST /products
@@ -86,10 +88,14 @@ components:
           $ref: '#/components/schemas/ProductType'
         inventory:
           type: integer
+        cost:
+          type: number   # New mandatory 'cost' property
+          minimum: 0     # Assuming cost cannot be negative
       required:
         - name
         - type
         - inventory
+        - cost   # 'cost' is now mandatory
     ProductType:
       type: string
       title: Product Type
